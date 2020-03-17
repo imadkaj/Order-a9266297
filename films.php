@@ -40,7 +40,6 @@ echo $result[0]['datum'] . '<br>';
 echo $result[0]['land van uitkomst'] . '<br>';
 echo '<br>';
 echo $result[0]['omschrijving'] . '<br>';
-echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/yScObvtkU-8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 ?>
 
 
