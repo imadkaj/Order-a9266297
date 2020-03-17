@@ -1,84 +1,46 @@
 <?php
+$dbHost = 'localhost';
+$dbName = 'netland';
+$dbUser = 'root';
+$dbPass = '';
 
-$id = $_GET['id'];
+function createConn() {
+    try {
+        $conn = new PDO("mysql:host=localhost;dbname=netland", 'root');
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch(PDOExeption $e) {
+        echo $e->getMessage();
+    }
 
-$localhost = 'localhost';
-$db = 'netland';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$localhost;dbname=$db;charset=$charset";
-
-try 
-{
-    $pdo = new PDO($dsn, $user, $pass);
-} 
-catch (\PDOException $e) 
-{
-    echo 'error connecting to database: ' . $e->getMessage();
+    return $conn;
 }
 
-$stmt = $pdo->prepare('SELECT * FROM movies WHERE volgnummer = :id');
-$stmt->bindParam(':id', $id);
-$stmt->execute();
-
-$film = $stmt->fetch(PDO::FETCH_OBJ);
-
-function getTitle()
-{
-    global $film;
-    return $film->title;
+function firedb($sql, $conn=null, $method="SELECT") {
+    if ($conn == null) {
+        $conn = createConn();
+    }
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    if ($method == "SELECT") {
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return array("result"=>$stmt->fetchAll(), "conn"=>$conn);
+    } elseif ($method == "INSERT") {
+        $id = $conn->lastInsertId();
+        return array("conn" => $conn, "id" => $id);
+    }
+    else {
+        return array("conn" => $conn);
+    }
 }
 
-function getDuration()
-{
-    global $film;
-    return $film->duur;
-}
-
-function getDatum()
-{
-    global $film;
-    return $film->datum;
-}
-
-function getCountry()
-{
-    global $film;
-    return $film->land;
-}
-
-function getDescription()
-{
-    global $film;
-    return $film->omschrijving;
-}
-
-function getTrailerID()
-{
-    global $film;
-    return $film->trailer_id;
-}
-
+$result = firedb("SELECT * FROM FILMS WHERE ID =" . $_GET['id'])['result'];
+echo $result[0]['title'] . '<br>';
+echo '<br>';
+echo $result[0]['datum'] . '<br>';
+echo $result[0]['land van uitkomst'] . '<br>';
+echo '<br>';
+echo $result[0]['omschrijving'] . '<br>';
+echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/yScObvtkU-8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 ?>
 
-<a href="index.php">terug</a>
 
-<h2><?php echo getTitle(); echo ' - ' . getDuration();?></h2>
-
-<table>
-    <tr>
-        <th>Datum van uitkomst</th>
-        <td><?php echo getDatum(); ?></td>
-    </tr>
-    <tr>
-        <th>Land</th>
-        <td><?php echo getCountry(); ?></td>
-    </tr>
-</table>
-
-<p><?php echo getDescription(); ?></p>
-
-<iframe width="420" height="345" src=<?php echo "https://www.youtube.com/embed/" . getTrailerID();?>>
-</iframe>
