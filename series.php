@@ -45,7 +45,7 @@ function getAward()
 
 function hasWonAward()
 {
-    if(getAward())
+if(getAward())
     {
         return 'ja';
     }

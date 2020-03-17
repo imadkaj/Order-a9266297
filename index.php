@@ -22,12 +22,12 @@ session_start();
 
 if(!isset($_SESSION['serieswitch']))
 {
-    $_SESSION['serieswitch'] = true;
+ $_SESSION['serieswitch'] = true;
 }
 
 if(!isset($_SESSION['filmswitch']))
 {
-    $_SESSION['filmswitch'] = true;
+ $_SESSION['filmswitch'] = true;
 }
 
 $serie_order = 'title';
